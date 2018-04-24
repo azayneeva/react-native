@@ -4,6 +4,7 @@ import firebase from "firebase";
 
 import { Header, Button, Spinner } from "./components/common";
 import LoginForm from "./components/LoginForm";
+import AlbumList from "./components/albums/AlbumList";
 
 class App extends Component {
   state = { loggedIn: null };
@@ -30,14 +31,8 @@ class App extends Component {
     switch (this.state.loggedIn) {
       case true:
         return (
-          <View style={{ marginTop: 5, height: 45 }}>
-            <Button
-              onPress={() => {
-                firebase.auth().signOut();
-              }}
-            >
-              Log out
-            </Button>
+          <View>
+            <AlbumList />;
           </View>
         );
       case false:
