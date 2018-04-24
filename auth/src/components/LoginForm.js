@@ -1,26 +1,39 @@
 import React, { Component } from "react";
 import firebase from "firebase";
 import { Text } from "react-native";
-import { Card, CardSection, Button, Input } from "./common";
+import { Card, CardSection, Button, Input, Spinner } from "./common";
 
 class LoginForm extends Component {
-  state = { email: "", password: "", error: "" };
+  state = { email: "", password: "", error: "", loading: false };
+
   onButtonPress = () => {
     const { email, password } = this.state;
+    this.setState({ error: "", loading: true });
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch(error => {
-        this.setState({ error: "Authentication failed!" });
-        console.log(error);
-
-        // firebase
-        //   .auth()
-        //   .createUserWithEmailAndPassword(email, password)
-        //   .catch(() => {
-        //     this.setState({ error: "Authentication failed!" });
-        //   });
+      .then(this._onLoginSuccess)
+      .catch(err => {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password)
+          .then(this._onLoginSuccess)
+          .catch(this._onLoginFail);
       });
+  };
+
+  _onLoginFail = () => {
+    this.setState({ error: "Authentication failed!", loading: false });
+  };
+  _onLoginSuccess = () => {
+    this.setState({ email: "", password: "", error: "", loading: false });
+  };
+
+  _renderButton = () => {
+    if (this.state.loading) {
+      return <Spinner size="small" />;
+    }
+    return <Button onPress={this.onButtonPress}>Log in</Button>;
   };
 
   _handleEmailChange = email => {
@@ -46,7 +59,6 @@ class LoginForm extends Component {
           <Input
             value={this.state.email}
             label="Email"
-            //onFocus={this._handleOnFocus}
             placeholder="user@gmail.com"
             onChangeText={this._handleEmailChange}
           />
@@ -67,9 +79,7 @@ class LoginForm extends Component {
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
         )}
 
-        <CardSection>
-          <Button onPress={this.onButtonPress}>Log in</Button>
-        </CardSection>
+        <CardSection>{this._renderButton()}</CardSection>
       </Card>
     );
   }

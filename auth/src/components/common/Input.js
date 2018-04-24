@@ -16,6 +16,7 @@ const Input = ({
       <TextInput
         //autoCorrect disables autocorrect of user input
         autoCorrect={false}
+        autoCapitalize={"none"}
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         style={inputStyle}
