@@ -6,7 +6,8 @@ const Input = ({
   value,
   onChangeText,
   placeholder,
-  secureTextEntry
+  secureTextEntry,
+  onFocus
 }) => {
   const { inputStyle, labelStyle, containerStyle } = styles;
   return (
@@ -20,6 +21,7 @@ const Input = ({
         style={inputStyle}
         value={value}
         onChangeText={onChangeText}
+        onFocus={onFocus}
       />
     </View>
   );
