@@ -1,14 +1,28 @@
 import React, { Component } from "react";
-import { Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  LayoutAnimation
+} from "react-native";
 import { connect } from "react-redux";
 import { CardSection } from "./common";
 import * as actions from "../actions";
 
 class ListItem extends Component {
+  componentWillUpdate() {
+    LayoutAnimation.spring();
+  }
   renderDescription() {
-    const { library, selectedLibraryId } = this.props;
-    if (library.id === selectedLibraryId) {
-      return <Text>{library.description}</Text>;
+    const { library, expanded } = this.props;
+    if (expanded) {
+      return (
+        <CardSection>
+          <Text style={{ flex: 1, paddingLeft: 10 }}>
+            {library.description}
+          </Text>
+        </CardSection>
+      );
     }
   }
   render() {
@@ -39,10 +53,10 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
-  return {
-    selectedLibraryId: state.selectedLibraryId
-  };
+//ownProps is an object with every props passed to this component
+const mapStateToProps = (state, ownProps) => {
+  const expanded = state.selectedLibraryId === ownProps.library.id;
+  return { expanded };
 };
 
 //null below is instead of mapStateToProps, actions are passed as props to the component
